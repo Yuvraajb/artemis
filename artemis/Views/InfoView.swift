@@ -41,16 +41,16 @@ struct InfoView: View {
                                 .foregroundColor(.white)
 
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("SLS Rocket Block 1")
+                                Text("Space Launch System (SLS)")
                                     .font(.headline)
                                     .foregroundColor(.white)
 
-                                Text("Model by AllThingsSpace")
+                                Text("Model by Clarence365")
                                     .font(.body)
                                     .foregroundColor(.gray)
 
                                 Link(
-                                    destination: URL(string: "https://skfb.ly/o6q8Z")!,
+                                    destination: URL(string: "https://skfb.ly/ot97t")!,
                                     label: {
                                         HStack {
                                             Text("View on Sketchfab")
