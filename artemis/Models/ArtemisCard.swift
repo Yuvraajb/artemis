@@ -16,7 +16,15 @@ struct ArtemisCard: Identifiable {
     let detailedDescription: String
     let simplifiedDescription: String
     let imageName: String?
+    let imageAssetName: String? // For custom images like sun, moon, etc.
     let category: CardCategory
+    
+    enum AnimationType {
+        case none
+        case pulse
+        case rotate
+    }
+    let animationType: AnimationType
 
     enum CardCategory: String {
         case overview
@@ -39,96 +47,51 @@ class ArtemisCardViewModel: ObservableObject {
         cards = [
             ArtemisCard(
                 id: UUID(),
-                title: "What is Artemis II?",
+                title: "Artemis II Mission",
                 shortDescription: "NASA's first crewed mission around the Moon since Apollo.",
                 detailedDescription: """
                 Artemis II is the second flight of NASA's Artemis program and the first crewed mission. It will carry four astronauts on a 10-day journey around the Moon and back to Earth.
 
+                This historic mission marks humanity's return to deep space exploration. The crew will travel farther from Earth than any human has gone before, testing critical systems and paving the way for future lunar landings.
+
                 Key Points:
                 • First crewed test of the Orion spacecraft
-                • Validates life support systems
-                • Tests deep space communication
+                • Validates life support systems in deep space
+                • Tests deep space communication capabilities
                 • Prepares for future lunar landings
+                • Demonstrates human capability beyond low Earth orbit
+
+                The mission will follow a free-return trajectory around the Moon, allowing the crew to experience the far side of our celestial neighbor before returning safely to Earth.
                 """,
                 simplifiedDescription: "Artemis II sends astronauts around the Moon to test everything before landing.",
                 imageName: "moon.stars.fill",
-                category: .overview
+                imageAssetName: nil,
+                category: .overview,
+                animationType: .pulse
             ),
             ArtemisCard(
                 id: UUID(),
-                title: "Why Artemis Exists",
-                shortDescription: "Establishing a sustainable human presence on the Moon.",
-                detailedDescription: """
-                The Artemis program aims to return humans to the Moon and establish a sustainable presence there.
-
-                Goals:
-                • Learn to live and work on another world
-                • Test technologies for Mars missions
-                • Conduct scientific research
-                • Inspire the next generation
-                • Create economic opportunities in space
-                """,
-                simplifiedDescription: "We're going back to the Moon to learn how to live in space and eventually go to Mars.",
-                imageName: "globe.americas.fill",
-                category: .overview
-            ),
-            ArtemisCard(
-                id: UUID(),
-                title: "Artemis Mission Timeline",
-                shortDescription: "A multi-phase journey to the Moon and beyond.",
-                detailedDescription: """
-                The Artemis program unfolds in phases:
-
-                Phase 1 (Artemis I): Uncrewed test flight - Completed 2022
-                Phase 2 (Artemis II): Crewed flight around Moon - 2025
-                Phase 3 (Artemis III): First crewed landing - 2026
-                Phase 4+: Sustainable lunar presence
-
-                Each phase builds on the previous, testing systems and building infrastructure.
-                """,
-                simplifiedDescription: "First we test, then we fly with crew, then we land. Step by step.",
-                imageName: "calendar",
-                category: .timeline
-            ),
-            ArtemisCard(
-                id: UUID(),
-                title: "Orion Spacecraft",
-                shortDescription: "NASA's next-generation crew vehicle for deep space.",
-                detailedDescription: """
-                The Orion spacecraft is designed to carry astronauts to the Moon and beyond.
-
-                Features:
-                • Life support for 21 days
-                • Advanced navigation systems
-                • Heat shield for Earth re-entry
-                • Can carry up to 4 astronauts
-                • Built for deep space missions
-
-                Orion will serve as the command module for Artemis missions.
-                """,
-                simplifiedDescription: "Orion is the spaceship that carries astronauts safely to the Moon and back.",
-                imageName: "airplane",
-                category: .systems
-            ),
-            ArtemisCard(
-                id: UUID(),
-                title: "Space Launch System (SLS)",
+                title: "Space Launch System",
                 shortDescription: "The most powerful rocket ever built.",
                 detailedDescription: """
-                SLS is NASA's super heavy-lift launch vehicle designed for deep space missions.
+                SLS is NASA's super heavy-lift launch vehicle designed for deep space missions. Standing taller than the Statue of Liberty, this behemoth represents the pinnacle of rocket engineering.
+
+                The SLS generates 8.8 million pounds of thrust at liftoff, making it the most powerful rocket ever constructed. Its massive power is essential for sending the Orion spacecraft, crew, and supplies on their journey to the Moon.
 
                 Capabilities:
                 • Most powerful rocket in the world
                 • Can launch 27+ metric tons to the Moon
                 • Uses proven technology from Space Shuttle
-                • Designed for crew safety
+                • Designed for crew safety above all else
                 • Enables missions beyond low Earth orbit
 
-                SLS provides the power needed to send Orion and supplies to the Moon.
+                As the rocket ascends, it burns through millions of pounds of fuel, creating a brilliant trail of fire and light that illuminates the Florida sky. The roar of its engines can be heard for miles, a testament to the raw power propelling humanity back to the Moon.
                 """,
                 simplifiedDescription: "SLS is the giant rocket that launches everything into space. It's incredibly powerful.",
                 imageName: "airplane.departure",
-                category: .systems
+                imageAssetName: nil,
+                category: .systems,
+                animationType: .none
             )
         ]
     }

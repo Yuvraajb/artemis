@@ -8,9 +8,12 @@
 import SwiftUI
 
 /// Main view for the Learn Artemis tab
+/// Uses Tinder-style swipeable Learn Cards Stack
 struct LearnArtemisView: View {
-    @StateObject private var viewModel = ArtemisCardViewModel()
-    @State private var isSimplifiedMode = false
+    @State private var selectedCard: LearnCard?
+    
+    // Sample cards data - in production, this could come from a view model
+    private let cards = LearnCard.sampleCards
 
     var body: some View {
         NavigationStack {
@@ -18,43 +21,27 @@ struct LearnArtemisView: View {
                 // Dark mode background
                 Color.black.ignoresSafeArea()
 
-                if let currentCard = viewModel.currentCard {
-                    SwipeableCardStack(
-                        card: currentCard,
-                        isSimplifiedMode: $isSimplifiedMode,
-                        onDismiss: {
-                            viewModel.nextCard()
-                        }
-                    )
-                } else {
-                    // All cards completed
-                    VStack(spacing: 20) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 60))
-                            .foregroundColor(.green)
-
-                        Text("You've explored all the cards!")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-
-                        Button(action: {
-                            viewModel.reset()
-                        }) {
-                            Text("Start Over")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 12)
-                                .background(Color.blue)
-                                .cornerRadius(12)
-                        }
+                // Tinder-style swipeable card stack
+                LearnCardSwipeableStack(
+                    cards: cards,
+                    onCardTapped: { card in
+                        selectedCard = card
                     }
-                }
+                )
             }
             .navigationTitle("Learn Artemis")
             .navigationBarTitleDisplayMode(.large)
             .preferredColorScheme(.dark)
+            .sheet(item: $selectedCard) { card in
+                LearnCardDetailView(
+                    card: card,
+                    onDismiss: {
+                        selectedCard = nil
+                    }
+                )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
         }
     }
 }
