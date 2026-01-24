@@ -432,7 +432,8 @@ class LLMManager {
         tagger.string = text
         let sentimentResult = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
         if let sentimentTag = sentimentResult.0 {
-            sentiment = Double(sentimentTag.rawValue) ?? 0.0
+            let rawValueString = sentimentTag.rawValue
+            sentiment = Double(rawValueString) ?? 0.0
         }
         
         return QueryAnalysis(
@@ -896,11 +897,11 @@ class LLMManager {
     /// Extract user message from full prompt
     private func extractUserMessage(from prompt: String) -> String {
         if let userRange = prompt.range(of: "User:") {
-            let afterUser = prompt[userRange.upperBound...]
-            if let assistantRange = afterUser.range(of: "\n\nAssistant:") {
-                return String(afterUser[..<assistantRange.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+            let afterUserString = String(prompt[userRange.upperBound...])
+            if let assistantRange = afterUserString.range(of: "\n\nAssistant:") {
+                return String(afterUserString[..<assistantRange.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
             }
-            return String(afterUser).trimmingCharacters(in: .whitespacesAndNewlines)
+            return afterUserString.trimmingCharacters(in: .whitespacesAndNewlines)
         }
         return prompt
     }

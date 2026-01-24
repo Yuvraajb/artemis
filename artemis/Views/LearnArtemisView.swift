@@ -26,7 +26,8 @@ struct LearnArtemisView: View {
                     cards: cards,
                     onCardTapped: { card in
                         selectedCard = card
-                    }
+                    },
+                    onCardSwiped: nil
                 )
             }
             .navigationTitle("Learn Artemis")

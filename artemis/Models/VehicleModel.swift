@@ -10,6 +10,7 @@ import Foundation
 /// Represents a vehicle that can be viewed in 3D or AR
 enum VehicleModel: String, Identifiable {
     case sls = "SLS Rocket"
+    case orion = "Orion Capsule"
 
     var id: String { rawValue }
 
@@ -17,12 +18,22 @@ enum VehicleModel: String, Identifiable {
 
     /// USDZ model filename
     var modelFileName: String {
-        return "sls.usdz"
+        switch self {
+        case .sls:
+            return "sls.usdz"
+        case .orion:
+            return "sls.usdz" // Placeholder - use SLS model for now
+        }
     }
 
     /// Thumbnail image name (placeholder - can use SF Symbols or bundled images)
     var thumbnailName: String {
-        return "airplane.departure"
+        switch self {
+        case .sls:
+            return "airplane.departure"
+        case .orion:
+            return "capsule.fill"
+        }
     }
 }
 

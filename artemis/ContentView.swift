@@ -8,29 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showMissionFlow = false
+    
     var body: some View {
-        TabView {
-            ModelSelectionView()
-                .tabItem {
-                    Label("3D Models", systemImage: "cube")
-                }
-
-            LearnArtemisView()
-                .tabItem {
-                    Label("Learn", systemImage: "sparkles")
-                }
-
-            CrewChatHomeView()
-                .tabItem {
-                    Label("Crew Chat", systemImage: "message.fill")
-                }
-
-            InfoView()
-                .tabItem {
-                    Label("Info", systemImage: "info.circle")
-                }
+        if showMissionFlow {
+            MissionFlowView(onDismiss: {
+                showMissionFlow = false
+            })
+        } else {
+            HomeView(showMissionFlow: $showMissionFlow)
         }
-        .preferredColorScheme(.dark)
     }
 }
 

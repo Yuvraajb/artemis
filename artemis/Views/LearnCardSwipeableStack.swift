@@ -12,6 +12,7 @@ struct LearnCardSwipeableStack: View {
     let cards: [LearnCard]
     @State private var currentIndex: Int = 0
     let onCardTapped: (LearnCard) -> Void
+    let onCardSwiped: ((LearnCard) -> Void)?
     
     @State private var dragOffset: CGSize = .zero
     @State private var rotationAngle: Double = 0
@@ -21,15 +22,19 @@ struct LearnCardSwipeableStack: View {
     private let maxRotation: Double = 15
     private let maxPreviewCards = 2 // Show up to 2 cards behind current
     
-    // Helper to get card at index with wrapping
-    private func card(at index: Int) -> LearnCard {
-        guard !cards.isEmpty else { fatalError("Cards array cannot be empty") }
-        return cards[index % cards.count]
+    // Helper to get card at index without wrapping
+    private func card(at index: Int) -> LearnCard? {
+        guard !cards.isEmpty, index >= 0, index < cards.count else { return nil }
+        return cards[index]
     }
     
     var currentCard: LearnCard? {
         guard !cards.isEmpty else { return nil }
         return card(at: currentIndex)
+    }
+    
+    var hasMoreCards: Bool {
+        return currentIndex < cards.count
     }
     
     var body: some View {
@@ -39,17 +44,19 @@ struct LearnCardSwipeableStack: View {
                 .ignoresSafeArea()
             
             if let currentCard = currentCard {
-                // Background preview cards (showing actual next cards with wrapping)
+                // Background preview cards (showing actual next cards without wrapping)
                 ForEach(0..<maxPreviewCards, id: \.self) { offset in
-                    let previewIndex = (currentIndex + offset + 1) % cards.count
-                    LearnCardTinderView(
-                        card: card(at: previewIndex),
-                        onTap: nil // Preview cards are not tappable
-                    )
-                    .scaleEffect(0.95 - CGFloat(offset) * 0.03)
-                    .offset(y: CGFloat(offset + 1) * 8)
-                    .opacity(1.0 - Double(offset) * 0.05) // Nearly fully opaque instead of semi-transparent
-                    .zIndex(Double(maxPreviewCards - offset))
+                    let previewIndex = currentIndex + offset + 1
+                    if let previewCard = card(at: previewIndex) {
+                        LearnCardTinderView(
+                            card: previewCard,
+                            onTap: nil // Preview cards are not tappable
+                        )
+                        .scaleEffect(0.95 - CGFloat(offset) * 0.03)
+                        .offset(y: CGFloat(offset + 1) * 8)
+                        .opacity(1.0 - Double(offset) * 0.05) // Nearly fully opaque instead of semi-transparent
+                        .zIndex(Double(maxPreviewCards - offset))
+                    }
                 }
                 
                 // Top interactive card
@@ -71,6 +78,9 @@ struct LearnCardSwipeableStack: View {
                             let dragDistance = abs(value.translation.width)
                             
                             if dragDistance > swipeThreshold {
+                                // Notify that card was swiped
+                                onCardSwiped?(currentCard)
+                                
                                 // Swipe away - faster animation
                                 withAnimation(.spring(response: 0.2, dampingFraction: 0.7)) {
                                     dragOffset = CGSize(
@@ -80,10 +90,12 @@ struct LearnCardSwipeableStack: View {
                                     rotationAngle = value.translation.width > 0 ? maxRotation : -maxRotation
                                 }
                                 
-                                // Smooth transition to next card
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                    nextCard()
-                                    resetCard()
+                                // Smooth transition to next card (only if more cards exist)
+                                if hasMoreCards {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                        nextCard()
+                                        resetCard()
+                                    }
                                 }
                             } else {
                                 // Snap back
@@ -101,8 +113,8 @@ struct LearnCardSwipeableStack: View {
     }
     
     private func nextCard() {
-        guard !cards.isEmpty else { return }
-        currentIndex = (currentIndex + 1) % cards.count
+        guard !cards.isEmpty, currentIndex < cards.count - 1 else { return }
+        currentIndex += 1
     }
     
     private func resetCard() {
@@ -196,7 +208,8 @@ struct LearnCardTinderView: View {
 #Preview {
     LearnCardSwipeableStack(
         cards: LearnCard.sampleCards,
-        onCardTapped: { _ in }
+        onCardTapped: { _ in },
+        onCardSwiped: nil
     )
     .background(Color.black)
     .preferredColorScheme(.dark)
